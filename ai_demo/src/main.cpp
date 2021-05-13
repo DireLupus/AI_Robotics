@@ -20,7 +20,7 @@ competition Competition;
 // create instance of jetson class to receive location and other
 // data from the Jetson nano
 //
-ai::jetson  jetson_comms;
+ai::jetson  jetson_comms; // lol this worked
 
 /*----------------------------------------------------------------------------*/
 // Create a robot_link on PORT1 using the unique name robot_32456_1
@@ -91,12 +91,12 @@ void autonomousMain(void) {
   // The first time we enter this function we will launch our Isolation routine
   // When the field goes disabled after the isolation period this task will die
   // When the field goes enabled for the second time this task will start again
-  // and we will enter the interaction period. 
+  // and we will enter the interaction period.
   // ..........................................................................
 
   if(firstAutoFlag)
     auto_Isolation();
-  else 
+  else
     auto_Interaction();
 
   firstAutoFlag = false;
@@ -121,12 +121,12 @@ void useIntake(MAP_RECORD& lm)
         if(lm.boxobj[i].classID == targetID)
         {
           mainDrive.getModule("Intake")->runUntil(100, 5.0);
-        } else 
+        } else
         {
           mainDrive.getModule("Intake")->runUntil(-100, 5.0);
         }
-      } 
-      mainDrive.waitUntilComplete(); 
+      }
+      mainDrive.waitUntilComplete();
     }
   }
 }
@@ -138,13 +138,13 @@ void center(int x, int y)
    if(x > IntakeX)
     {
       mainDrive.turnRightBy(50 * fabs((float)(IntakeX - x))/(float)(IntakeX));
-    } 
+    }
     if(x < IntakeX)
     {
       mainDrive.turnLeftBy(50 * fabs((float)(IntakeX - x))/(float)(IntakeX)) ;
-    } 
+    }
 
-    if(y > IntakeY) 
+    if(y > IntakeY)
     {
       mainDrive.strafeForwardBy(50); // this might need to be removed
     }
@@ -206,7 +206,7 @@ int main() {
         {
           if(local_map.boxobj[i].classID == targetID)
           {
-            if(abs(IntakeX - local_map.boxobj[i].x) < previousDifference) 
+            if(abs(IntakeX - local_map.boxobj[i].x) < previousDifference)
             {
               previousDifference = abs(IntakeX - local_map.boxobj[i].x);
               tempTracking = local_map.boxobj[i];
@@ -218,15 +218,15 @@ int main() {
         if(found)
         {
           center(tempTracking.x, tempTracking.y);
-        } else 
+        } else
         {
           idle();
         }
 
 
 
-        // request new data    
-        // NOTE: This request should only happen in a single task.    
+        // request new data
+        // NOTE: This request should only happen in a single task.
         jetson_comms.request_map();
 
         // Allow other tasks to run
