@@ -104,6 +104,11 @@ void autonomousMain(void) {
 
 
 /*----------------------------------------------------------------------------*/
+struct point
+{
+  float x, y;
+};
+
 int IntakeX = 184, IntakeY = 221;
 int8_t targetID = 1;
 int32_t deadzone = 20;
@@ -151,12 +156,109 @@ void center(int x, int y)
 
     mainDrive.startAllMotors(true);
 }
-void idle( void )
+
+float getDistance(point p1, point p2)
+{
+  float currentX = p1.x - p2.x;
+  float currentY = p1.y - p2.y;
+
+  return (currentX*currentX) + (currentY*currentY);
+}
+
+float getTurn(point p2, float currentAngle)
+{
+  float rVal = sqrt(pow(p2.x, 2) + pow(p2.y, 2));
+
+  return acos( (( cos(-currentAngle + (2*PI)) * p2.x ) +  ( sin(-currentAngle + (2*PI)) * p2.y )) / rVal);
+}
+
+bool foundclosest = false;
+point currentClosest;
+void patrol( MAP_RECORD& lm )
 {
   mainDrive.getModule("Intake")->stopAllMotors();
 
-  mainDrive.turnRightAt(50);
-  mainDrive.startAllMotors(false);
+  point allPoints[4];
+  allPoints[0].x = -42.1f;
+  allPoints[0].y = 35.8f;
+  allPoints[1].x = -42.1f;
+  allPoints[1].y = -33.8f;
+  allPoints[2].x = 34.5f;
+  allPoints[2].y = -39.6f;
+  allPoints[3].x = 40.0f;
+  allPoints[3].y = 34.0f;
+
+  point robotPoint;
+  robotPoint.x = lm.pos.x;
+  robotPoint.y = lm.pos.y;
+
+  if(getDistance(allPoints[0], robotPoint) > 1 && getDistance(allPoints[1], robotPoint) > 1 && getDistance(allPoints[2], robotPoint) > 1 && getDistance(allPoints[3], robotPoint) > 1)
+  {
+    if(!foundclosest)
+    {
+      currentClosest = allPoints[0];
+      for(int i = 0; i < 4; i++)
+      {
+        if(getDistance(allPoints[i], robotPoint) < getDistance(currentClosest, robotPoint))
+        {
+          currentClosest = allPoints[i];
+        }
+      }
+      foundclosest = true;
+    } else 
+    {
+      mainDrive.stopAllMotors();
+      if(lm.pos.az != 0)
+      {
+        if(lm.pos.az > 180)
+        {
+          mainDrive.turnLeftAt(10);
+        } else if(lm.pos.az < 180)
+        {
+          mainDrive.turnRightAt(10);
+        }
+        mainDrive.startAllMotors(false);
+      } else 
+      {
+        if(currentClosest.x > lm.pos.x)
+        {
+          mainDrive.strafeRightBy(50);
+        } else if(currentClosest.x < lm.pos.x)
+        {
+          mainDrive.strafeLeftBy(50);
+        }
+
+        if(currentClosest.y > lm.pos.y)
+        {
+          mainDrive.strafeBackwardBy(50);
+        } else if(currentClosest.x < lm.pos.x)
+        {
+          mainDrive.strafeForwardBy(50);
+        }
+        mainDrive.startAllMotors(true);
+      }
+    }
+
+  } else 
+  {
+    if(getDistance(allPoints[0], robotPoint) < 1)
+    {
+
+    }
+    if(getDistance(allPoints[1], robotPoint) < 1)
+    {
+
+    }
+    if(getDistance(allPoints[2], robotPoint) < 1)
+    {
+
+    }
+    if(getDistance(allPoints[3], robotPoint) < 1)
+    {
+
+    }
+  }
+
 }
 
 int main() {
@@ -168,10 +270,6 @@ int main() {
 
     // RUn at about 15Hz
     int32_t loop_time = 66;
-    float turnAngle;
-    float rVal;
-    bool needAngle = true;
-    bool atAngle = false;
 
     // start the status update display
     thread t1(dashboardTask);
@@ -215,19 +313,25 @@ int main() {
           }
         }
 
+      /*
         if(found)
         {
           center(tempTracking.x, tempTracking.y);
         } else
         {
-          idle();
+          patrol(local_map);
         }
+      */
 
-
+      if(jetson_comms.get_packets() > 100)
+      {
+        patrol(local_map);
+      }
 
         // request new data
         // NOTE: This request should only happen in a single task.
         jetson_comms.request_map();
+
 
         // Allow other tasks to run
         this_thread::sleep_for(loop_time);
