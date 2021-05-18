@@ -1,3 +1,16 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*                                                                            */
+/*    Author:       Chris Davis                                               */
+/*    Created:      Tue 18 May 2021                                           */
+/*                                                                            */
+/*    Description:  Miscellaneous Functions                                   */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+
+
 #include "vex.h"
 
 #include <math.h>
@@ -86,7 +99,13 @@ void turnPIDAbs(int setpoint)//spins motors until on correct heading±error
 
 
 
-
+void tSpeed (double pow)
+{
+  Left1.spin(forward,v,voltageUnits::volt);
+  Left2.spin(forward,v,voltageUnits::volt);
+  Right1.spin(forward,v,voltageUnits::volt);
+  Right2.spin(forward,v,voltageUnits::volt);
+}
 
 
 
