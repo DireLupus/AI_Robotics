@@ -788,6 +788,11 @@ namespace bancroft
 
     instance->thisDrive->mailboxEmpty = false;
 
+    instance->thisDrive->LeftFrontMotor->resetRotation();
+    instance->thisDrive->LeftBackMotor->resetRotation();
+    instance->thisDrive->RightFrontMotor->resetRotation();
+    instance->thisDrive->RightBackMotor->resetRotation();
+
     if(!instance->thisDrive->hasInertial)
     {
       while(
