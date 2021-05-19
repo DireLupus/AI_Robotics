@@ -174,7 +174,11 @@ float getTurn(point p2, float currentAngle)
 
 bool foundclosest = false;
 bool turned = false;
+bool needTarget = true;
+bool hasTarget = false;
+int turnMode = 0;
 point currentClosest;
+point currentTarget;
 void patrol( MAP_RECORD lm )
 {
   mainDrive.getModule("Intake")->stopAllMotors();
@@ -193,7 +197,7 @@ void patrol( MAP_RECORD lm )
   float robotRotation;
   link.get_local_location(robotPoint.x, robotPoint.y, robotRotation);
 
-  if(getDistance(allPoints[0], robotPoint) > 50 && getDistance(allPoints[1], robotPoint) > 50 && getDistance(allPoints[2], robotPoint) > 50 && getDistance(allPoints[3], robotPoint) > 50)
+  if(!hasTarget && getDistance(allPoints[0], robotPoint) > 50 && getDistance(allPoints[1], robotPoint) > 50 && getDistance(allPoints[2], robotPoint) > 50 && getDistance(allPoints[3], robotPoint) > 50)
   {
     if(!foundclosest)
     {
@@ -213,6 +217,7 @@ void patrol( MAP_RECORD lm )
       {
         mainDrive.turnUntil( 20 * (lm.pos.az/fabs(lm.pos.az)), fabs(lm.pos.az));
         mainDrive.waitUntilComplete();
+        turnMode = 0;
         turned = true;
       } else 
       {
@@ -239,6 +244,131 @@ void patrol( MAP_RECORD lm )
   } else 
   {
     mainDrive.stopAllMotors();
+
+    if(needTarget)
+    {
+      if(getDistance(allPoints[0], robotPoint) < 50)
+      {
+        currentTarget = allPoints[1];
+        mainDrive.turnUntil( 20.0 * (lm.pos.az/fabs(lm.pos.az)), fabs(lm.pos.az));
+        mainDrive.waitUntilComplete();
+        turnMode = 0;
+        hasTarget = true;
+        needTarget = false;
+      }
+      if(getDistance(allPoints[1], robotPoint) < 50)
+      {
+        currentTarget = allPoints[2];
+        mainDrive.turnUntil( 20.0 * ( (PI/2.0 + lm.pos.az)/fabs(PI/2.0 + lm.pos.az) ),  fabs(PI/2.0 + lm.pos.az));
+        mainDrive.waitUntilComplete();
+        turnMode = 1;
+        hasTarget = true;
+        needTarget = false;
+      }
+      if(getDistance(allPoints[2], robotPoint) < 50)
+      {
+        currentTarget = allPoints[3];
+        mainDrive.turnUntil( 20.0 * ( (PI + lm.pos.az)/fabs(PI + lm.pos.az) ), fabs(PI + lm.pos.az));
+        mainDrive.waitUntilComplete();
+        turnMode = 2;
+        hasTarget = true;
+        needTarget = false;
+      }
+      if(getDistance(allPoints[3], robotPoint) < 50)
+      {
+        currentTarget = allPoints[0];
+        mainDrive.turnUntil( 20.0 *  ( (lm.pos.az - PI/2.0)/fabs(lm.pos.az - PI/2.0) ), fabs(lm.pos.az - PI/2.0));
+        mainDrive.waitUntilComplete();
+        turnMode = 3;
+        hasTarget = true;
+        needTarget = false;
+      }
+    } else 
+    {
+      mainDrive.stopAllMotors();
+      if(getDistance(currentTarget, robotPoint) < 50)
+      {
+        hasTarget = false;
+        needTarget = true;
+      }
+
+      if(currentTarget.x > lm.pos.x)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+      } else if(currentTarget.x < lm.pos.x)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+      }
+
+      if(currentTarget.y > lm.pos.y)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+      } else if(currentTarget.y < lm.pos.y)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+      }
+      mainDrive.startAllMotors(true);
+    }
   }
 }
 
@@ -272,7 +402,7 @@ int main() {
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
 
-        useIntake(local_map);
+        //useIntake(local_map);
         // Rework this into using box objects: take object closest to the center of the camera and turn until it is in the center of the camera
         // Then move forward until it is inside the intakes
         // Then 'store' the ball
