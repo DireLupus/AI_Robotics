@@ -141,10 +141,9 @@ void center(int x, int y)
    if(x > IntakeX)
     {
       mainDrive.turnRightBy(50 * fabs((float)(IntakeX - x))/(float)(IntakeX));
-    }
-    if(x < IntakeX)
+    } else if(x < IntakeX)
     {
-      mainDrive.turnLeftBy(50 * fabs((float)(IntakeX - x))/(float)(IntakeX)) ;
+      mainDrive.turnLeftBy(50 * fabs((float)(IntakeX - x))/(float)(IntakeX));
     }
 
     if(y > IntakeY)
@@ -158,8 +157,273 @@ void idle( void )
 {
   mainDrive.getModule("Intake")->stopAllMotors();
 
+<<<<<<< Updated upstream
   mainDrive.turnRightAt(50);
   mainDrive.startAllMotors(false);
+=======
+  point allPoints[4];
+  allPoints[0].x = -42.1f * -25.4;
+  allPoints[0].y = 35.8f * -25.4;
+  allPoints[1].x = -42.1f * -25.4;
+  allPoints[1].y = -33.8f * -25.4;
+  allPoints[2].x = 34.5f * -25.4;
+  allPoints[2].y = -39.6f * -25.4;
+  allPoints[3].x = 40.0f * -25.4;
+  allPoints[3].y = 34.0f * -25.4;
+
+  point robotPoint;
+  float robotRotation;
+  link.get_local_location(robotPoint.x, robotPoint.y, robotRotation);
+
+  if(!hasTarget && getDistance(allPoints[0], robotPoint) > 50 && getDistance(allPoints[1], robotPoint) > 50 && getDistance(allPoints[2], robotPoint) > 50 && getDistance(allPoints[3], robotPoint) > 50)
+  {
+    if(!foundclosest)
+    {
+      currentClosest = allPoints[0];
+      for(int i = 0; i < 4; i++)
+      {
+        if(getDistance(allPoints[i], robotPoint) < getDistance(currentClosest, robotPoint))
+        {
+          currentClosest = allPoints[i];
+          turnMode = i;
+        }
+      }
+      foundclosest = true;
+    } else 
+    {
+      mainDrive.stopAllMotors();
+      if(!turned)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.turnUntil( 20.0 * (lm.pos.az/fabs(lm.pos.az)), fabs(lm.pos.az));
+          mainDrive.waitUntilComplete();
+        } else if(turnMode == 1)
+        {
+          mainDrive.turnUntil( 20.0 * ( (PI/2.0 + lm.pos.az)/fabs(PI/2.0 + lm.pos.az) ),  fabs(PI/2.0 + lm.pos.az));
+          mainDrive.waitUntilComplete();
+        } else if(turnMode == 2)
+        {
+          mainDrive.turnUntil( 20.0 * ( (PI + lm.pos.az)/fabs(PI + lm.pos.az) ), fabs(PI + lm.pos.az));
+          mainDrive.waitUntilComplete();
+        } else if(turnMode == 3)
+        {
+          mainDrive.turnUntil( 20.0 *  ( (lm.pos.az - PI/2.0)/fabs(lm.pos.az - PI/2.0) ), fabs(lm.pos.az - PI/2.0));
+          mainDrive.waitUntilComplete();
+        }
+        turned = true;
+      } else 
+      {
+        mainDrive.stopAllMotors();
+        if(currentClosest.x > lm.pos.x)
+        {
+          if(turnMode == 0)
+          {
+            mainDrive.strafeRightBy(20);
+          }
+          if(turnMode == 1)
+          {
+            mainDrive.strafeBackwardBy(20);
+          }
+          if(turnMode == 2)
+          {
+            mainDrive.strafeLeftBy(20);
+          }
+          if(turnMode == 3)
+          {
+            mainDrive.strafeForwardBy(20);
+          }
+        } else if(currentClosest.x < lm.pos.x)
+        {
+          if(turnMode == 0)
+          {
+            mainDrive.strafeLeftBy(20);
+          }
+          if(turnMode == 1)
+          {
+            mainDrive.strafeForwardBy(20);
+          }
+          if(turnMode == 2)
+          {
+            mainDrive.strafeRightBy(20);
+          }
+          if(turnMode == 3)
+          {
+            mainDrive.strafeBackwardBy(20);
+          }
+        }
+
+        if(currentClosest.y > lm.pos.y)
+        {
+          if(turnMode == 0)
+          {
+            mainDrive.strafeForwardBy(20);
+          }
+          if(turnMode == 1)
+          {
+            mainDrive.strafeRightBy(20);
+          }
+          if(turnMode == 2)
+          {
+            mainDrive.strafeBackwardBy(20);
+          }
+          if(turnMode == 3)
+          {
+            mainDrive.strafeLeftBy(20);
+          }
+        } else if(currentClosest.y < lm.pos.y)
+        {
+          if(turnMode == 0)
+          {
+            mainDrive.strafeBackwardBy(20);
+          }
+          if(turnMode == 1)
+          {
+            mainDrive.strafeLeftBy(20);
+          }
+          if(turnMode == 2)
+          {
+            mainDrive.strafeForwardBy(20);
+          }
+          if(turnMode == 3)
+          {
+            mainDrive.strafeRightBy(20);
+          }
+        }
+        mainDrive.startAllMotors(true);
+      }
+    }
+
+  } else 
+  {
+    mainDrive.stopAllMotors();
+
+    if(needTarget)
+    {
+      if(getDistance(allPoints[0], robotPoint) < 50)
+      {
+        currentTarget = allPoints[1];
+        mainDrive.turnUntil( 20.0 * (lm.pos.az/fabs(lm.pos.az)), fabs(lm.pos.az));
+        mainDrive.waitUntilComplete();
+        turnMode = 0;
+        hasTarget = true;
+        needTarget = false;
+      }
+      if(getDistance(allPoints[1], robotPoint) < 50)
+      {
+        currentTarget = allPoints[2];
+        mainDrive.turnUntil( 20.0 * ( (PI/2.0 + lm.pos.az)/fabs(PI/2.0 + lm.pos.az) ),  fabs(PI/2.0 + lm.pos.az));
+        mainDrive.waitUntilComplete();
+        turnMode = 1;
+        hasTarget = true;
+        needTarget = false;
+      }
+      if(getDistance(allPoints[2], robotPoint) < 50)
+      {
+        currentTarget = allPoints[3];
+        mainDrive.turnUntil( 20.0 * ( (PI + lm.pos.az)/fabs(PI + lm.pos.az) ), fabs(PI + lm.pos.az));
+        mainDrive.waitUntilComplete();
+        turnMode = 2;
+        hasTarget = true;
+        needTarget = false;
+      }
+      if(getDistance(allPoints[3], robotPoint) < 50)
+      {
+        currentTarget = allPoints[0];
+        mainDrive.turnUntil( 20.0 *  ( (lm.pos.az - PI/2.0)/fabs(lm.pos.az - PI/2.0) ), fabs(lm.pos.az - PI/2.0));
+        mainDrive.waitUntilComplete();
+        turnMode = 3;
+        hasTarget = true;
+        needTarget = false;
+      }
+    } else 
+    {
+      mainDrive.stopAllMotors();
+      if(getDistance(currentTarget, robotPoint) < 50)
+      {
+        hasTarget = false;
+        needTarget = true;
+      }
+
+      if(currentTarget.x > lm.pos.x)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+      } else if(currentTarget.x < lm.pos.x)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+      }
+
+      if(currentTarget.y > lm.pos.y)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+      } else if(currentTarget.y < lm.pos.y)
+      {
+        if(turnMode == 0)
+        {
+          mainDrive.strafeBackwardBy(20);
+        }
+        if(turnMode == 1)
+        {
+          mainDrive.strafeLeftBy(20);
+        }
+        if(turnMode == 2)
+        {
+          mainDrive.strafeForwardBy(20);
+        }
+        if(turnMode == 3)
+        {
+          mainDrive.strafeRightBy(20);
+        }
+      }
+      mainDrive.startAllMotors(true);
+    }
+  }
+>>>>>>> Stashed changes
 }
 
 int main() {
@@ -197,7 +461,10 @@ int main() {
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
 
+<<<<<<< Updated upstream
         //fprintf(fp, "%.2f %.2f %.2f\n", local_map.pos.x, local_map.pos.y, local_map.pos.az  );
+=======
+>>>>>>> Stashed changes
         useIntake(local_map);
         // Rework this into using box objects: take object closest to the center of the camera and turn until it is in the center of the camera
         // Then move forward until it is inside the intakes
@@ -218,15 +485,28 @@ int main() {
           }
         }
 
+<<<<<<< Updated upstream
+=======
+      if(jetson_comms.get_packets() > 100)
+      {
+>>>>>>> Stashed changes
         if(found)
         {
+          foundclosest = false;
+          turned = false;
+          needTarget = true;
+          hasTarget = false;
           center(tempTracking.x, tempTracking.y);
         } else
         {
           idle();
         }
+<<<<<<< Updated upstream
 
 
+=======
+      }
+>>>>>>> Stashed changes
 
         // request new data
         // NOTE: This request should only happen in a single task.
