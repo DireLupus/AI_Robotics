@@ -159,10 +159,10 @@ void center(int x, int y)
 
 float getDistance(point p1, point p2)
 {
-  float currentX = p1.x - p2.x;
-  float currentY = p1.y - p2.y;
+  float currentX = p2.x - p1.x;
+  float currentY = p2.y - p1.y;
 
-  return (currentX*currentX) + (currentY*currentY);
+  return sqrt((currentX*currentX) + (currentY*currentY));
 }
 
 float getTurn(point p2, float currentAngle)
@@ -173,26 +173,27 @@ float getTurn(point p2, float currentAngle)
 }
 
 bool foundclosest = false;
+bool turned = false;
 point currentClosest;
-void patrol( MAP_RECORD& lm )
+void patrol( MAP_RECORD lm )
 {
   mainDrive.getModule("Intake")->stopAllMotors();
 
   point allPoints[4];
-  allPoints[0].x = -42.1f;
-  allPoints[0].y = 35.8f;
-  allPoints[1].x = -42.1f;
-  allPoints[1].y = -33.8f;
-  allPoints[2].x = 34.5f;
-  allPoints[2].y = -39.6f;
-  allPoints[3].x = 40.0f;
-  allPoints[3].y = 34.0f;
+  allPoints[0].x = -42.1f * -25.4;
+  allPoints[0].y = 35.8f * -25.4;
+  allPoints[1].x = -42.1f * -25.4;
+  allPoints[1].y = -33.8f * -25.4;
+  allPoints[2].x = 34.5f * -25.4;
+  allPoints[2].y = -39.6f * -25.4;
+  allPoints[3].x = 40.0f * -25.4;
+  allPoints[3].y = 34.0f * -25.4;
 
   point robotPoint;
-  robotPoint.x = lm.pos.x;
-  robotPoint.y = lm.pos.y;
+  float robotRotation;
+  link.get_local_location(robotPoint.x, robotPoint.y, robotRotation);
 
-  if(getDistance(allPoints[0], robotPoint) > 1 && getDistance(allPoints[1], robotPoint) > 1 && getDistance(allPoints[2], robotPoint) > 1 && getDistance(allPoints[3], robotPoint) > 1)
+  if(getDistance(allPoints[0], robotPoint) > 50 && getDistance(allPoints[1], robotPoint) > 50 && getDistance(allPoints[2], robotPoint) > 50 && getDistance(allPoints[3], robotPoint) > 50)
   {
     if(!foundclosest)
     {
@@ -208,32 +209,28 @@ void patrol( MAP_RECORD& lm )
     } else 
     {
       mainDrive.stopAllMotors();
-      if(lm.pos.az != 0)
+      if(!turned)
       {
-        if(lm.pos.az > 180)
-        {
-          mainDrive.turnLeftAt(10);
-        } else if(lm.pos.az < 180)
-        {
-          mainDrive.turnRightAt(10);
-        }
-        mainDrive.startAllMotors(false);
+        mainDrive.turnUntil( 20 * (lm.pos.az/fabs(lm.pos.az)), fabs(lm.pos.az));
+        mainDrive.waitUntilComplete();
+        turned = true;
       } else 
       {
+        //fprintf(fp, "%f :: %f \n", currentClosest.x, currentClosest.y);
         if(currentClosest.x > lm.pos.x)
         {
-          mainDrive.strafeRightBy(50);
+          mainDrive.strafeRightBy(20);
         } else if(currentClosest.x < lm.pos.x)
         {
-          mainDrive.strafeLeftBy(50);
+          mainDrive.strafeLeftBy(20);
         }
 
         if(currentClosest.y > lm.pos.y)
         {
-          mainDrive.strafeBackwardBy(50);
+          mainDrive.strafeForwardBy(20);
         } else if(currentClosest.x < lm.pos.x)
         {
-          mainDrive.strafeForwardBy(50);
+          mainDrive.strafeBackwardBy(20);
         }
         mainDrive.startAllMotors(true);
       }
@@ -241,24 +238,8 @@ void patrol( MAP_RECORD& lm )
 
   } else 
   {
-    if(getDistance(allPoints[0], robotPoint) < 1)
-    {
-
-    }
-    if(getDistance(allPoints[1], robotPoint) < 1)
-    {
-
-    }
-    if(getDistance(allPoints[2], robotPoint) < 1)
-    {
-
-    }
-    if(getDistance(allPoints[3], robotPoint) < 1)
-    {
-
-    }
+    mainDrive.stopAllMotors();
   }
-
 }
 
 int main() {
@@ -283,7 +264,6 @@ int main() {
     // then this can be used as a direct connection to USB on the controller
     // when using VEXcode.
     //
-    //FILE *fp = fopen("/dev/serial2","wb");
 
     while(1) {
         // get last map data
@@ -292,7 +272,6 @@ int main() {
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
 
-        //fprintf(fp, "%.2f %.2f %.2f\n", local_map.pos.x, local_map.pos.y, local_map.pos.az  );
         useIntake(local_map);
         // Rework this into using box objects: take object closest to the center of the camera and turn until it is in the center of the camera
         // Then move forward until it is inside the intakes
