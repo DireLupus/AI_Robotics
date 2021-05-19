@@ -7,9 +7,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-
-//J. Asher 2021
-
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -107,6 +104,11 @@ void autonomousMain(void) {
 
 
 /*----------------------------------------------------------------------------*/
+struct point
+{
+  float x, y;
+};
+
 int IntakeX = 184, IntakeY = 221;
 int8_t targetID = 1;
 int32_t deadzone = 20;
@@ -153,14 +155,33 @@ void center(int x, int y)
 
     mainDrive.startAllMotors(true);
 }
-void idle( void )
+
+float getDistance(point p1, point p2)
+{
+  float currentX = p2.x - p1.x;
+  float currentY = p2.y - p1.y;
+
+  return sqrt((currentX*currentX) + (currentY*currentY));
+}
+
+float getTurn(point p2, float currentAngle)
+{
+  float rVal = sqrt(pow(p2.x, 2) + pow(p2.y, 2));
+
+  return acos( (( cos(-currentAngle + (2*PI)) * p2.x ) +  ( sin(-currentAngle + (2*PI)) * p2.y )) / rVal);
+}
+
+bool foundclosest = false;
+bool turned = false;
+bool needTarget = true;
+bool hasTarget = false;
+int turnMode = 0;
+point currentClosest;
+point currentTarget;
+void patrol( MAP_RECORD lm )
 {
   mainDrive.getModule("Intake")->stopAllMotors();
 
-<<<<<<< Updated upstream
-  mainDrive.turnRightAt(50);
-  mainDrive.startAllMotors(false);
-=======
   point allPoints[4];
   allPoints[0].x = -42.1f * -25.4;
   allPoints[0].y = 35.8f * -25.4;
@@ -189,7 +210,7 @@ void idle( void )
         }
       }
       foundclosest = true;
-    } else 
+    } else
     {
       mainDrive.stopAllMotors();
       if(!turned)
@@ -212,7 +233,7 @@ void idle( void )
           mainDrive.waitUntilComplete();
         }
         turned = true;
-      } else 
+      } else
       {
         mainDrive.stopAllMotors();
         if(currentClosest.x > lm.pos.x)
@@ -294,7 +315,7 @@ void idle( void )
       }
     }
 
-  } else 
+  } else
   {
     mainDrive.stopAllMotors();
 
@@ -336,7 +357,7 @@ void idle( void )
         hasTarget = true;
         needTarget = false;
       }
-    } else 
+    } else
     {
       mainDrive.stopAllMotors();
       if(getDistance(currentTarget, robotPoint) < 50)
@@ -423,7 +444,6 @@ void idle( void )
       mainDrive.startAllMotors(true);
     }
   }
->>>>>>> Stashed changes
 }
 
 int main() {
@@ -435,10 +455,6 @@ int main() {
 
     // RUn at about 15Hz
     int32_t loop_time = 66;
-    float turnAngle;
-    float rVal;
-    bool needAngle = true;
-    bool atAngle = false;
 
     // start the status update display
     thread t1(dashboardTask);
@@ -452,7 +468,6 @@ int main() {
     // then this can be used as a direct connection to USB on the controller
     // when using VEXcode.
     //
-    //FILE *fp = fopen("/dev/serial2","wb");
 
     while(1) {
         // get last map data
@@ -461,10 +476,6 @@ int main() {
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
 
-<<<<<<< Updated upstream
-        //fprintf(fp, "%.2f %.2f %.2f\n", local_map.pos.x, local_map.pos.y, local_map.pos.az  );
-=======
->>>>>>> Stashed changes
         useIntake(local_map);
         // Rework this into using box objects: take object closest to the center of the camera and turn until it is in the center of the camera
         // Then move forward until it is inside the intakes
@@ -485,11 +496,8 @@ int main() {
           }
         }
 
-<<<<<<< Updated upstream
-=======
       if(jetson_comms.get_packets() > 100)
       {
->>>>>>> Stashed changes
         if(found)
         {
           foundclosest = false;
@@ -499,18 +507,14 @@ int main() {
           center(tempTracking.x, tempTracking.y);
         } else
         {
-          idle();
+          patrol(local_map);
         }
-<<<<<<< Updated upstream
-
-
-=======
       }
->>>>>>> Stashed changes
 
         // request new data
         // NOTE: This request should only happen in a single task.
         jetson_comms.request_map();
+
 
         // Allow other tasks to run
         this_thread::sleep_for(loop_time);
