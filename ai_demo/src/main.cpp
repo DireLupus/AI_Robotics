@@ -233,7 +233,7 @@ void patrol( MAP_RECORD lm )
         if(currentClosest.y > lm.pos.y)
         {
           mainDrive.strafeForwardBy(20);
-        } else if(currentClosest.x < lm.pos.x)
+        } else if(currentClosest.y < lm.pos.y)
         {
           mainDrive.strafeBackwardBy(20);
         }
