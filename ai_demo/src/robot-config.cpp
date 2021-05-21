@@ -6,7 +6,12 @@ using namespace vex;
 brain Brain;
 
 bancroft::XDrive mainDrive(new vex::motor(PORT1, vex::gearSetting::ratio18_1, false), new vex::motor(PORT2, vex::gearSetting::ratio18_1, false), new vex::motor(PORT11, vex::gearSetting::ratio18_1, false), new vex::motor(PORT12, vex::gearSetting::ratio18_1, false));
-
+int towers[9][3] = 
+{
+  {}, {}, {},
+  {}, {}, {},
+  {}, {}, {}
+};
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
@@ -20,40 +25,6 @@ void vexcodeInit(void) {
   mainDrive.setWheelRadius(3.81);
   mainDrive.setWheelToWheel(40.64);
   mainDrive.setPIDValues(3, 4, 2);
+
+  
 }
-
-// My Previous Attempts:
-
-/*
-if(found && needAngle)
-  {
-    // -----Putting robot at 0,0----- 
-    tempTracking.positionX -= local_map.pos.x;
-    tempTracking.positionY -= local_map.pos.y;
-    ocal_map.pos.x = 0;
-    local_map.pos.y = 0;
-
-    / -----Finding turn angle----- 
-    rVal = sqrt(pow(tempTracking.positionX, 2) + pow(tempTracking.positionX, 2));
-    // U = (cos(-local_map.pos.az + (2*PI)), sin(-local_map.pos.az + (2*PI)));
-    // V = (tempTracking.positionX, tempTracking.positionY); 
-    // (U DOT V) / rVal
-    turnAngle = acos( (( cos(-local_map.pos.az + (2*PI)) * tempTracking.positionX ) +  ( sin(-local_map.pos.az + (2*PI)) * tempTracking.positionY )) / rVal);
-          
-    needAngle = false;
-    atAngle = false;
-  } else if(found && !needAngle)
-  {
-    if(!atAngle)
-    {
-      mainDrive.turnUntil(50, turnAngle);
-      mainDrive.waitUntilComplete(); 
-      atAngle = true;
-    } else 
-    {
-      mainDrive.driveUntilPID(50, rVal/10.0);
-      mainDrive.waitUntilComplete();
-      found = false;
-    }
-  }
-*/

@@ -32,6 +32,10 @@ ai::jetson  jetson_comms; // lol this worked
 // Comment out the following definition to build for the worker robot
 #define  MANAGER_ROBOT    1
 
+#define BLUE 1
+#define RED  0
+#define NONE -1
+
 #if defined(MANAGER_ROBOT)
 #pragma message("building for the manager")
 ai::robot_link       link( PORT11, "robot_32456_1", linkType::manager );
@@ -104,15 +108,11 @@ void autonomousMain(void) {
 
 
 /*----------------------------------------------------------------------------*/
-struct point
-{
-  float x, y;
-};
 
 int IntakeX = 184, IntakeY = 221;
-int8_t targetID = 1;
+int8_t targetID = BLUE;
 int32_t deadzone = 20;
-int32_t deadzoneY = 80;
+int32_t deadzoneY = 40;
 
 void useIntake(MAP_RECORD& lm)
 {
@@ -444,6 +444,11 @@ void patrol( MAP_RECORD lm )
       mainDrive.startAllMotors(true);
     }
   }
+}
+
+void score( MAP_RECORD& lm )
+{
+
 }
 
 int main() {
