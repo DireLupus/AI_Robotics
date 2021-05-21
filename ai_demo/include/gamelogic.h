@@ -39,6 +39,21 @@ class Tower
     }
 
     int getColor(int index) { return ballColors[index]; }
+    int getTop() 
+    { 
+      if(ballColors[0] != -1)
+      { 
+        return ballColors[0];
+      } else if(ballColors[0] == -1 && ballColors[1] != -1)
+      {
+        return ballColors[1];
+      } else if(ballColors[0] == -1 && ballColors[1] == -1 && ballColors[2] != -1)
+      {
+        return ballColors[2];
+      }
+
+      return -1;
+    }
 };
 
 class Field

@@ -337,7 +337,7 @@ Discarded input sections
  .llvm_addrsig  0x0000000000000000        0x4 build/src/dashboard.o
  .text          0x0000000000000000        0x0 build/src/gamelogic.o
  .text._ZN5Field5scoreEv
-                0x0000000000000000      0x208 build/src/gamelogic.o
+                0x0000000000000000      0x530 build/src/gamelogic.o
  .ARM.exidx.text._ZN5Field5scoreEv
                 0x0000000000000000        0x8 build/src/gamelogic.o
  .text._ZN5Field9scoreDiffEv
