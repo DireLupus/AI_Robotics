@@ -322,9 +322,6 @@ Discarded input sections
                 0x0000000000000000        0x8 build/src/DriveConfigureations.o
  .llvm_addrsig  0x0000000000000000        0xc build/src/DriveConfigureations.o
  .text          0x0000000000000000        0x0 build/src/ai_jetson.o
- .bss.towers    0x0000000000000000       0x6c build/src/ai_jetson.o
- .bss.towerPosition
-                0x0000000000000000       0x48 build/src/ai_jetson.o
  .llvm_addrsig  0x0000000000000000        0x2 build/src/ai_jetson.o
  .text          0x0000000000000000        0x0 build/src/ai_robot_link.o
  .text._ZN2ai10robot_link14get_tx_packetsEv
@@ -335,14 +332,8 @@ Discarded input sections
                 0x0000000000000000        0x8 build/src/ai_robot_link.o
  .ARM.exidx.text._ZN2ai10robot_link13get_tx_errorsEv
                 0x0000000000000000        0x8 build/src/ai_robot_link.o
- .bss.towers    0x0000000000000000       0x6c build/src/ai_robot_link.o
- .bss.towerPosition
-                0x0000000000000000       0x48 build/src/ai_robot_link.o
  .llvm_addrsig  0x0000000000000000        0x2 build/src/ai_robot_link.o
  .text          0x0000000000000000        0x0 build/src/dashboard.o
- .bss.towers    0x0000000000000000       0x6c build/src/dashboard.o
- .bss.towerPosition
-                0x0000000000000000       0x48 build/src/dashboard.o
  .llvm_addrsig  0x0000000000000000        0x4 build/src/dashboard.o
  .text          0x0000000000000000        0x0 build/src/main.o
  .text._Z14auto_Isolationv
@@ -365,9 +356,6 @@ Discarded input sections
                 0x0000000000000000        0x4 build/src/main.o
  .ARM.exidx.text._Z5scoreR10MAP_RECORD
                 0x0000000000000000        0x8 build/src/main.o
- .bss.towers    0x0000000000000000       0x6c build/src/main.o
- .bss.towerPosition
-                0x0000000000000000       0x48 build/src/main.o
  .llvm_addrsig  0x0000000000000000        0xa build/src/main.o
  .text          0x0000000000000000        0x0 build/src/robot-config.o
  .group         0x0000000000000000       0x14 build/src/robot-config.o
@@ -378,8 +366,6 @@ Discarded input sections
  .ARM.exidx.text._ZNSt11_Deque_baseIPN8bancroft6XDrive8passableESaIS3_EED2Ev
                 0x0000000000000000        0x8 build/src/robot-config.o
  .bss.towers    0x0000000000000000       0x6c build/src/robot-config.o
- .bss.towerPosition
-                0x0000000000000000       0x48 build/src/robot-config.o
  .llvm_addrsig  0x0000000000000000        0x5 build/src/robot-config.o
  .text          0x0000000000000000        0x0 /Applications/VEXcode Pro V5.app/Contents/Resources/sdk/vexv5/libv5rt.a(v5_startup.c.obj)
  .data          0x0000000000000000        0x0 /Applications/VEXcode Pro V5.app/Contents/Resources/sdk/vexv5/libv5rt.a(v5_startup.c.obj)
