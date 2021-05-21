@@ -335,6 +335,25 @@ Discarded input sections
  .llvm_addrsig  0x0000000000000000        0x2 build/src/ai_robot_link.o
  .text          0x0000000000000000        0x0 build/src/dashboard.o
  .llvm_addrsig  0x0000000000000000        0x4 build/src/dashboard.o
+ .text          0x0000000000000000        0x0 build/src/gamelogic.o
+ .text._ZN5Field5scoreEv
+                0x0000000000000000      0x208 build/src/gamelogic.o
+ .ARM.exidx.text._ZN5Field5scoreEv
+                0x0000000000000000        0x8 build/src/gamelogic.o
+ .text._ZN5Field9scoreDiffEv
+                0x0000000000000000       0x10 build/src/gamelogic.o
+ .ARM.exidx.text._ZN5Field9scoreDiffEv
+                0x0000000000000000        0x8 build/src/gamelogic.o
+ .text._ZN5Field7winningEv
+                0x0000000000000000       0x18 build/src/gamelogic.o
+ .ARM.exidx.text._ZN5Field7winningEv
+                0x0000000000000000        0x8 build/src/gamelogic.o
+ .comment       0x0000000000000000       0x2e build/src/gamelogic.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/src/gamelogic.o
+ .ARM.attributes
+                0x0000000000000000       0x3a build/src/gamelogic.o
+ .llvm_addrsig  0x0000000000000000        0x0 build/src/gamelogic.o
  .text          0x0000000000000000        0x0 build/src/main.o
  .text._Z14auto_Isolationv
                 0x0000000000000000        0x4 build/src/main.o
@@ -4473,6 +4492,7 @@ LOAD build/src/DriveConfigureations.o
 LOAD build/src/ai_jetson.o
 LOAD build/src/ai_robot_link.o
 LOAD build/src/dashboard.o
+LOAD build/src/gamelogic.o
 LOAD build/src/main.o
 LOAD build/src/robot-config.o
 START GROUP

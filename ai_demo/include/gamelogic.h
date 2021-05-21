@@ -21,20 +21,24 @@ using namespace std;
 class Tower
 {
   private:
-    int ballColor;
+    int ballColors[3];
   public:
 
     Tower ()
     {
-      ballColor = -1;
+      ballColors[0] = -1;
+      ballColors[1] = -1;
+      ballColors[2] = -1;
     }
 
-    Tower (const int& c)
+    Tower (int t, int m, int b)
     {
-      ballColor = c;
+      ballColors[0] = t;
+      ballColors[1] = m;
+      ballColors[2] = b;
     }
 
-    int getColor() { return ballColor; }
+    int getColor(int index) { return ballColors[index]; }
 };
 
 class Field

@@ -10,8 +10,7 @@ struct point
   float x, y;
 };
 
-extern int towers[9][3];
-extern point towerPosition[9];
+extern point towerPosition[3][3];
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
