@@ -101,10 +101,13 @@ void turnPIDAbs(int setpoint)//spins motors until on correct heading±error
 
 void tSpeed (double pow)
 {
-  Left1.spin(forward,v,voltageUnits::volt);
-  Left2.spin(forward,v,voltageUnits::volt);
-  Right1.spin(forward,v,voltageUnits::volt);
-  Right2.spin(forward,v,voltageUnits::volt);
+  /*
+  Left1.spin(forward,pow,voltageUnits::volt);
+  Left2.spin(forward,pow,voltageUnits::volt);
+  Right1.spin(forward,pow,voltageUnits::volt);
+  Right2.spin(forward,pow,voltageUnits::volt);
+  */
+  // You have to fix this before pushing again, I have not defined Left1, Left2, Right1, or Right2. Everything is stored in a DriveBase class. 
 }
 
 
