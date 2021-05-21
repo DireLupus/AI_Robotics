@@ -1,6 +1,6 @@
 #include "gamelogic.h"
 
-void Field::score(int x, int y)
+void Field::score()
 {
   int tempScoreF = 0;
   int tempScoreE = 0;

@@ -52,7 +52,7 @@ class Field
       //memset(f,0,sizeof(f)); // This is not the default field.
     }
 
-    void score(int,int);
+    void score();
     void update(int,int);
     bool winning();
     int scoreDiff();
