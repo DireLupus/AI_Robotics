@@ -385,7 +385,10 @@ void score( MAP_RECORD& lm )
   robotPoint.x = lm.pos.x;
   robotPoint.y = lm.pos.y;
   if(!foundTower)
-  { 
+  {
+    mainDrive.turnUntil( 20.0 * (lm.pos.az/fabs(lm.pos.az)), fabs(lm.pos.az));
+    mainDrive.waitUntilComplete();
+    turnMode = 0;
     for(int x = 0; x < 3; x++)
     {
       for(int y = 0; y < 3; y++)
@@ -413,9 +416,17 @@ void score( MAP_RECORD& lm )
     mainDrive.waitUntilComplete();
     mainDrive.driveUntil(20.0, 46.0);
     mainDrive.waitUntilComplete();
+    if(mainField.get(towerX, towerY).getColor(0) != -1)
+    {
+      mainDrive.getModule("Intake")->runUntil(200.0, 3.0);
+      mainDrive.waitUntilComplete();
+      mainField.get(towerX, towerY).removeBottom();
+    }
     mainDrive.getModule("Indexer")->runUntil(200.0, 3.0);
     mainDrive.waitUntilComplete();
     hasBall = false;
+    mainField.get(towerX, towerY).setTop(mainField.currentTeam);
+    foundTower = false;
   }
 }
 

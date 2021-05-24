@@ -39,6 +39,30 @@ class Tower
     }
 
     int getColor(int index) { return ballColors[index]; }
+    void removeBottom()
+    {
+      ballColors[2] = ballColors[1];
+      ballColors[1] = ballColors[0];
+      ballColors[0] = -1;
+    }
+    void setTop(int team)
+    {
+      if(ballColors[2] == -1)
+      {
+        ballColors[2] = team;
+        return;
+      }
+      if(ballColors[1] == -1)
+      {
+        ballColors[1] = team;
+        return;
+      }
+      if(ballColors[1] == -1)
+      {
+        ballColors[1] = team;
+        return;
+      }
+    }
     int getTop() 
     { 
       if(ballColors[0] != -1)

@@ -24,7 +24,7 @@ void vexcodeInit(void) {
   mainDrive.setWheelToWheel(40.64);
   mainDrive.setPIDValues(3, 4, 2);
 
-  towerPosition[0][0].x = -40 * -25.4; towerPosition[0][0].y = 47 * -25.4;  towerHeadings[0][0] = (-(3.0*PI)/4.0);
+  towerPosition[0][0].x = -40 * -25.4; towerPosition[0][0].y = 50 * -25.4;  towerHeadings[0][0] = (-(3.0*PI)/4.0);
   towerPosition[1][0].x = -32 * -25.4; towerPosition[1][0].y = 6 * -25.4;   towerHeadings[1][0] = (-(PI)/2.0);
   towerPosition[2][0].x = -44 * -25.4; towerPosition[2][0].y = -36 * -25.4; towerHeadings[2][0] = (-(PI)/4.0);
 
