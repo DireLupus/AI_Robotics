@@ -1,5 +1,25 @@
 #include "gamelogic.h"
 
+
+Field::Field(int team) : currentTeam(team) // This registers a constant variable: this is to make it effectively readonly (I was too lazy to make a getter method)
+{
+  f[0][0] = Tower(-1, 0, 1);
+  f[1][0] = Tower(-1, 0, 1);
+  f[2][0] = Tower(-1, 0, 1);
+
+  f[0][1] = Tower(1, 0, 1);
+  f[1][1] = Tower(-1, -1, -1);
+  f[2][1] = Tower(0, 1, 0);
+
+  f[0][2] = Tower(-1, 1, 0);
+  f[1][2] = Tower(-1, 1, 0);
+  f[2][2] = Tower(-1, 1, 0);
+}
+
+Tower Field::get(int x, int y)
+{
+  return f[x][y]; 
+} 
 void Field::score()
 {
   int tempScoreF = 0;

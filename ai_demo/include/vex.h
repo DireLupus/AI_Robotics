@@ -19,6 +19,7 @@
 #include "ai_robot_link.h"
 
 #include "robot-config.h"
+#include "gamelogic.h"
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \

@@ -20,7 +20,7 @@ competition Competition;
 // create instance of jetson class to receive location and other
 // data from the Jetson nano
 //
-ai::jetson  jetson_comms; // lol this worked
+ai::jetson  jetson_comms;
 
 /*----------------------------------------------------------------------------*/
 // Create a robot_link on PORT1 using the unique name robot_32456_1
@@ -35,6 +35,8 @@ ai::jetson  jetson_comms; // lol this worked
 #define BLUE 1
 #define RED  0
 #define NONE -1
+
+Field mainField(BLUE); // initializing field for team blue
 
 #if defined(MANAGER_ROBOT)
 #pragma message("building for the manager")
@@ -110,7 +112,6 @@ void autonomousMain(void) {
 /*----------------------------------------------------------------------------*/
 
 int IntakeX = 184, IntakeY = 221;
-int8_t targetID = BLUE;
 int32_t deadzone = 20;
 int32_t deadzoneY = 40;
 
@@ -123,7 +124,7 @@ void useIntake(MAP_RECORD& lm)
       mainDrive.driveUntil(100, 20);
       if(lm.boxobj[i].y < IntakeY + deadzone/2.0 && lm.boxobj[i].y > IntakeY - deadzoneY)
       {
-        if(lm.boxobj[i].classID == targetID)
+        if(lm.boxobj[i].classID == mainField.currentTeam)
         {
           mainDrive.getModule("Intake")->runUntil(100, 5.0);
         } else
@@ -178,6 +179,87 @@ bool hasTarget = false;
 int turnMode = 0;
 point currentClosest;
 point currentTarget;
+
+void goTo(float x, float y, MAP_RECORD& lm) 
+{
+  mainDrive.stopAllMotors();
+  if (x > lm.pos.x) 
+  {
+    if (turnMode == 0) 
+    {
+      mainDrive.strafeRightBy(100 * fabs((x - lm.pos.x) / x) );
+    }
+    if (turnMode == 1) 
+    {
+      mainDrive.strafeBackwardBy(100 * fabs((x - lm.pos.x) / x));
+    }
+    if (turnMode == 2) 
+    {
+      mainDrive.strafeLeftBy(100 * fabs((x - lm.pos.x) / x));
+    }
+    if (turnMode == 3) 
+    {
+      mainDrive.strafeForwardBy(100 * fabs((x - lm.pos.x) / x));
+    }
+  } else if (x < lm.pos.x) 
+  {
+    if (turnMode == 0) 
+    {
+      mainDrive.strafeLeftBy(100 * fabs((x - lm.pos.x) / x));
+    }
+    if (turnMode == 1) 
+    {
+      mainDrive.strafeForwardBy(100 * fabs((x - lm.pos.x) / x));
+    }
+    if (turnMode == 2)
+    {
+      mainDrive.strafeRightBy(100 * fabs((x - lm.pos.x) / x));
+    }
+    if (turnMode == 3) 
+    {
+      mainDrive.strafeBackwardBy(100 * fabs((x - lm.pos.x) / x));
+    }
+  }
+
+  if (y > lm.pos.y) 
+  {
+    if (turnMode == 0) 
+    {
+      mainDrive.strafeForwardBy(100 * fabs((y - lm.pos.y) / y));
+    }
+    if (turnMode == 1) 
+    {
+      mainDrive.strafeRightBy(100 * fabs((y - lm.pos.y) / y));
+    }
+    if (turnMode == 2) 
+    {
+      mainDrive.strafeBackwardBy(100 * fabs((y - lm.pos.y) / y));
+    }
+    if (turnMode == 3) 
+    {
+      mainDrive.strafeLeftBy(100 * fabs((y - lm.pos.y) / y));
+    }
+  } else if (y < lm.pos.y) 
+  {
+    if (turnMode == 0) 
+    {
+      mainDrive.strafeBackwardBy(100 * fabs((y - lm.pos.y) / y));
+    }
+    if (turnMode == 1) 
+    {
+      mainDrive.strafeLeftBy(100 * fabs((y - lm.pos.y) / y));
+    }
+    if (turnMode == 2) 
+    {
+      mainDrive.strafeForwardBy(100 * fabs((y - lm.pos.y) / y));
+    }
+    if (turnMode == 3) 
+    {
+      mainDrive.strafeRightBy(100 * fabs((y - lm.pos.y) / y));
+    }
+  }
+  mainDrive.startAllMotors(true);
+}
 void patrol( MAP_RECORD lm )
 {
   mainDrive.getModule("Intake")->stopAllMotors();
@@ -235,83 +317,7 @@ void patrol( MAP_RECORD lm )
         turned = true;
       } else
       {
-        mainDrive.stopAllMotors();
-        if(currentClosest.x > lm.pos.x)
-        {
-          if(turnMode == 0)
-          {
-            mainDrive.strafeRightBy(20);
-          }
-          if(turnMode == 1)
-          {
-            mainDrive.strafeBackwardBy(20);
-          }
-          if(turnMode == 2)
-          {
-            mainDrive.strafeLeftBy(20);
-          }
-          if(turnMode == 3)
-          {
-            mainDrive.strafeForwardBy(20);
-          }
-        } else if(currentClosest.x < lm.pos.x)
-        {
-          if(turnMode == 0)
-          {
-            mainDrive.strafeLeftBy(20);
-          }
-          if(turnMode == 1)
-          {
-            mainDrive.strafeForwardBy(20);
-          }
-          if(turnMode == 2)
-          {
-            mainDrive.strafeRightBy(20);
-          }
-          if(turnMode == 3)
-          {
-            mainDrive.strafeBackwardBy(20);
-          }
-        }
-
-        if(currentClosest.y > lm.pos.y)
-        {
-          if(turnMode == 0)
-          {
-            mainDrive.strafeForwardBy(20);
-          }
-          if(turnMode == 1)
-          {
-            mainDrive.strafeRightBy(20);
-          }
-          if(turnMode == 2)
-          {
-            mainDrive.strafeBackwardBy(20);
-          }
-          if(turnMode == 3)
-          {
-            mainDrive.strafeLeftBy(20);
-          }
-        } else if(currentClosest.y < lm.pos.y)
-        {
-          if(turnMode == 0)
-          {
-            mainDrive.strafeBackwardBy(20);
-          }
-          if(turnMode == 1)
-          {
-            mainDrive.strafeLeftBy(20);
-          }
-          if(turnMode == 2)
-          {
-            mainDrive.strafeForwardBy(20);
-          }
-          if(turnMode == 3)
-          {
-            mainDrive.strafeRightBy(20);
-          }
-        }
-        mainDrive.startAllMotors(true);
+        goTo(currentClosest.x, currentClosest.y, lm);
       }
     }
 
@@ -365,92 +371,40 @@ void patrol( MAP_RECORD lm )
         hasTarget = false;
         needTarget = true;
       }
-
-      if(currentTarget.x > lm.pos.x)
-      {
-        if(turnMode == 0)
-        {
-          mainDrive.strafeRightBy(20);
-        }
-        if(turnMode == 1)
-        {
-          mainDrive.strafeBackwardBy(20);
-        }
-        if(turnMode == 2)
-        {
-          mainDrive.strafeLeftBy(20);
-        }
-        if(turnMode == 3)
-        {
-          mainDrive.strafeForwardBy(20);
-        }
-      } else if(currentTarget.x < lm.pos.x)
-      {
-        if(turnMode == 0)
-        {
-          mainDrive.strafeLeftBy(20);
-        }
-        if(turnMode == 1)
-        {
-          mainDrive.strafeForwardBy(20);
-        }
-        if(turnMode == 2)
-        {
-          mainDrive.strafeRightBy(20);
-        }
-        if(turnMode == 3)
-        {
-          mainDrive.strafeBackwardBy(20);
-        }
-      }
-
-      if(currentTarget.y > lm.pos.y)
-      {
-        if(turnMode == 0)
-        {
-          mainDrive.strafeForwardBy(20);
-        }
-        if(turnMode == 1)
-        {
-          mainDrive.strafeRightBy(20);
-        }
-        if(turnMode == 2)
-        {
-          mainDrive.strafeBackwardBy(20);
-        }
-        if(turnMode == 3)
-        {
-          mainDrive.strafeLeftBy(20);
-        }
-      } else if(currentTarget.y < lm.pos.y)
-      {
-        if(turnMode == 0)
-        {
-          mainDrive.strafeBackwardBy(20);
-        }
-        if(turnMode == 1)
-        {
-          mainDrive.strafeLeftBy(20);
-        }
-        if(turnMode == 2)
-        {
-          mainDrive.strafeForwardBy(20);
-        }
-        if(turnMode == 3)
-        {
-          mainDrive.strafeRightBy(20);
-        }
-      }
-      mainDrive.startAllMotors(true);
+      goTo(currentTarget.x, currentTarget.y, lm);
     }
   }
 }
 
+bool foundTower = false;
+int towerX, towerY;
 void score( MAP_RECORD& lm )
 {
-
+  for(int x = 0; x < 3 && !foundTower; x++)
+  {
+    for(int y = 0; y < 3 && !foundTower; y++)
+    {
+     if(mainField.get(x, y).getTop() != mainField.currentTeam && mainField.get(x, y).getColor(0) == -1)
+     {
+       towerX = x; 
+       towerY = y;
+       foundTower = true;
+     }
+    }
+  }
+  point robotPoint;
+  robotPoint.x = lm.pos.x;
+  robotPoint.y = lm.pos.y;
+  if(getDistance(robotPoint, towerPosition[towerX][towerY]) > 50)
+  {
+    goTo(towerPosition[towerX][towerY].x, towerPosition[towerX][towerY].y, lm);
+  } else 
+  {
+    mainDrive.stopAllMotors();
+  }
 }
 
+bool hasBall = true;
 int main() {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
@@ -473,7 +427,6 @@ int main() {
     // then this can be used as a direct connection to USB on the controller
     // when using VEXcode.
     //
-
     while(1) {
         // get last map data
         jetson_comms.get_data( &local_map );
@@ -490,7 +443,7 @@ int main() {
         fifo_object_box tempTracking;
         for(int i = 0; i < local_map.boxnum; i++)
         {
-          if(local_map.boxobj[i].classID == targetID)
+          if(local_map.boxobj[i].classID == mainField.currentTeam)
           {
             if(abs(IntakeX - local_map.boxobj[i].x) < previousDifference)
             {
@@ -503,6 +456,7 @@ int main() {
 
       if(jetson_comms.get_packets() > 100)
       {
+        /*
         if(found)
         {
           foundclosest = false;
@@ -512,6 +466,13 @@ int main() {
           center(tempTracking.x, tempTracking.y);
         } else
         {
+          patrol(local_map);
+        }
+        */
+
+        if(hasBall)
+        {
+          //score(local_map);
           patrol(local_map);
         }
       }

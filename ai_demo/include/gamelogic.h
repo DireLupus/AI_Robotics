@@ -60,19 +60,14 @@ class Field
 {
   private:
     Tower f[3][3];
-    int currentTeam;
     int enemyPoints;
     int friendlyPoints;
   public:
-    Field (int c)
-    {
-      this->currentTeam = c;
-      //set default field
-      //memset(f,0,sizeof(f)); // This is not the default field.
-    }
-
+    Field(int team);
+    const int currentTeam;
+    Tower get(int x, int y);
     void score();
-    void update(int,int);
+    void update(int x, int y, Tower t);
     bool winning();
     int scoreDiff();
 };

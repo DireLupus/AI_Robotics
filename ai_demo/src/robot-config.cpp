@@ -6,12 +6,10 @@ using namespace vex;
 brain Brain;
 
 bancroft::XDrive mainDrive(new vex::motor(PORT1, vex::gearSetting::ratio18_1, false), new vex::motor(PORT2, vex::gearSetting::ratio18_1, false), new vex::motor(PORT11, vex::gearSetting::ratio18_1, false), new vex::motor(PORT12, vex::gearSetting::ratio18_1, false));
-int towers[9][3] = 
-{
-  {}, {}, {},
-  {}, {}, {},
-  {}, {}, {}
-};
+
+point towerPosition[3][3];
+int towerHeadings[3][3];
+
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
@@ -26,5 +24,16 @@ void vexcodeInit(void) {
   mainDrive.setWheelToWheel(40.64);
   mainDrive.setPIDValues(3, 4, 2);
 
+  towerPosition[0][0].x = -41 * -25.4; towerPosition[0][0].y = 44 * -25.4;
+  towerPosition[1][0].x = -37 * -25.4; towerPosition[1][0].y = 0 * -25.4;
+  towerPosition[2][0].x = -41 * -25.4; towerPosition[2][0].y = -48 * -25.4;
+
+  towerPosition[0][1].x = 0 * -25.4; towerPosition[0][1].y = 38 * -25.4;
+  towerPosition[1][1].x = -30 * -25.4; towerPosition[1][1].y = 0 * -25.4;
+  towerPosition[2][1].x = 0 * -25.4; towerPosition[2][1].y = -37 * -25.4;
+
+  towerPosition[0][2].x = 40 * -25.4; towerPosition[0][2].y = 50 * -25.4;
+  towerPosition[1][2].x = 38 * -25.4; towerPosition[1][2].y = 0 * -25.4;
+  towerPosition[2][2].x = 43 * -25.4; towerPosition[2][2].y = -42 * -25.4;
   
 }
