@@ -187,37 +187,37 @@ void goTo(float x, float y, MAP_RECORD& lm)
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeRightBy(100 * fabs((x - lm.pos.x) / x) );
+      mainDrive.strafeRightBy( fabs((x - lm.pos.x)) * 0.5 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeBackwardBy(100 * fabs((x - lm.pos.x) / x));
+      mainDrive.strafeBackwardBy( fabs((x - lm.pos.x)) * 0.5 );
     }
     if (turnMode == 2) 
     {
-      mainDrive.strafeLeftBy(100 * fabs((x - lm.pos.x) / x));
+      mainDrive.strafeLeftBy( fabs((x - lm.pos.x)) * 0.5 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeForwardBy(100 * fabs((x - lm.pos.x) / x));
+      mainDrive.strafeForwardBy( fabs((x - lm.pos.x)) * 0.5 );
     }
   } else if (x < lm.pos.x) 
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeLeftBy(100 * fabs((x - lm.pos.x) / x));
+      mainDrive.strafeLeftBy( fabs((x - lm.pos.x)) * 0.5 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeForwardBy(100 * fabs((x - lm.pos.x) / x));
+      mainDrive.strafeForwardBy( fabs((x - lm.pos.x)) * 0.5 );
     }
     if (turnMode == 2)
     {
-      mainDrive.strafeRightBy(100 * fabs((x - lm.pos.x) / x));
+      mainDrive.strafeRightBy( fabs((x - lm.pos.x)) * 0.5 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeBackwardBy(100 * fabs((x - lm.pos.x) / x));
+      mainDrive.strafeBackwardBy( fabs((x - lm.pos.x)) * 0.5 );
     }
   }
 
@@ -225,37 +225,37 @@ void goTo(float x, float y, MAP_RECORD& lm)
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeForwardBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeForwardBy( fabs((y - lm.pos.y)) * 0.5 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeRightBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeRightBy( fabs((y - lm.pos.y)) * 0.5 );
     }
     if (turnMode == 2) 
     {
-      mainDrive.strafeBackwardBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeBackwardBy( fabs((y - lm.pos.y)) * 0.5 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeLeftBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeLeftBy( fabs((y - lm.pos.y)) * 0.5 );
     }
   } else if (y < lm.pos.y) 
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeBackwardBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeBackwardBy( fabs((y - lm.pos.y)) * 0.5 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeLeftBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeLeftBy( fabs((y - lm.pos.y)) * 0.5 );
     }
     if (turnMode == 2) 
     {
-      mainDrive.strafeForwardBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeForwardBy( fabs((y - lm.pos.y)) * 0.5 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeRightBy(100 * fabs((y - lm.pos.y) / y));
+      mainDrive.strafeRightBy( fabs((y - lm.pos.y)) * 0.5 );
     }
   }
   mainDrive.startAllMotors(true);
@@ -377,30 +377,42 @@ void patrol( MAP_RECORD lm )
 }
 
 bool foundTower = false;
-int towerX, towerY;
+int towerX = 0, towerY = 0;
 void score( MAP_RECORD& lm )
 {
-  for(int x = 0; x < 3 && !foundTower; x++)
-  {
-    for(int y = 0; y < 3 && !foundTower; y++)
-    {
-     if(mainField.get(x, y).getTop() != mainField.currentTeam && mainField.get(x, y).getColor(0) == -1)
-     {
-       towerX = x; 
-       towerY = y;
-       foundTower = true;
-     }
-    }
-  }
   point robotPoint;
   robotPoint.x = lm.pos.x;
   robotPoint.y = lm.pos.y;
+  if(!foundTower)
+  { 
+    for(int x = 0; x < 3; x++)
+    {
+      for(int y = 0; y < 3; y++)
+      {
+        if( mainField.get(x, y).getTop() != mainField.currentTeam )
+        {
+          if(getDistance(towerPosition[x][y], robotPoint) < getDistance(towerPosition[towerX][towerY], robotPoint))
+          {
+            towerX = x; 
+            towerY = y;
+          }
+        }
+      }
+    }
+    foundTower = true;
+  }
+  
   if(getDistance(robotPoint, towerPosition[towerX][towerY]) > 50)
   {
     goTo(towerPosition[towerX][towerY].x, towerPosition[towerX][towerY].y, lm);
   } else 
   {
     mainDrive.stopAllMotors();
+    mainDrive.turnUntil( 20.0 * ( (towerHeadings[towerX][towerY] + lm.pos.az)/fabs(towerHeadings[towerX][towerY] + lm.pos.az) ),  fabs(towerHeadings[towerX][towerY] + lm.pos.az));
+    mainDrive.waitUntilComplete();
+    /*
+    mainDrive.driveUntil(20.0, 5.0);
+    */
   }
 }
 
@@ -426,7 +438,7 @@ int main() {
     // printf for debug.  If the controller is connected
     // then this can be used as a direct connection to USB on the controller
     // when using VEXcode.
-    //
+
     while(1) {
         // get last map data
         jetson_comms.get_data( &local_map );
@@ -434,7 +446,7 @@ int main() {
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
 
-        useIntake(local_map);
+        //useIntake(local_map);
         // Rework this into using box objects: take object closest to the center of the camera and turn until it is in the center of the camera
         // Then move forward until it is inside the intakes
         // Then 'store' the ball
@@ -472,8 +484,8 @@ int main() {
 
         if(hasBall)
         {
-          //score(local_map);
-          patrol(local_map);
+          score(local_map);
+          //patrol(local_map);
         }
       }
 
