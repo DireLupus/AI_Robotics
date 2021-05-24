@@ -24,16 +24,16 @@ void vexcodeInit(void) {
   mainDrive.setWheelToWheel(40.64);
   mainDrive.setPIDValues(3, 4, 2);
 
-  towerPosition[0][0].x = -41 * -25.4; towerPosition[0][0].y = 44 * -25.4;  towerHeadings[0][0] = (-(3.0*PI)/4.0);
-  towerPosition[1][0].x = -37 * -25.4; towerPosition[1][0].y = 0 * -25.4;   towerHeadings[1][0] = (-(PI)/2.0);
-  towerPosition[2][0].x = -41 * -25.4; towerPosition[2][0].y = -48 * -25.4; towerHeadings[2][0] = (-(PI)/4.0);
+  towerPosition[0][0].x = -40 * -25.4; towerPosition[0][0].y = 47 * -25.4;  towerHeadings[0][0] = (-(3.0*PI)/4.0);
+  towerPosition[1][0].x = -32 * -25.4; towerPosition[1][0].y = 6 * -25.4;   towerHeadings[1][0] = (-(PI)/2.0);
+  towerPosition[2][0].x = -44 * -25.4; towerPosition[2][0].y = -36 * -25.4; towerHeadings[2][0] = (-(PI)/4.0);
 
-  towerPosition[0][1].x = 0 * -25.4;   towerPosition[0][1].y = 38 * -25.4;  towerHeadings[0][1] = PI;
-  towerPosition[1][1].x = -30 * -25.4; towerPosition[1][1].y = 0 * -25.4;   towerHeadings[1][1] = (PI/2.0);
-  towerPosition[2][1].x = 0 * -25.4;   towerPosition[2][1].y = -37 * -25.4; towerHeadings[2][1] = (0);
+  towerPosition[0][1].x = 0 * -25.4;   towerPosition[0][1].y = 29 * -25.4;  towerHeadings[0][1] = PI;
+  towerPosition[1][1].x = -22 * -25.4; towerPosition[1][1].y = 6 * -25.4;   towerHeadings[1][1] = (PI/2.0);
+  towerPosition[2][1].x = 0 * -25.4;   towerPosition[2][1].y = -27 * -25.4; towerHeadings[2][1] = (0);
 
-  towerPosition[0][2].x = 40 * -25.4; towerPosition[0][2].y = 50 * -25.4;  towerHeadings[0][2] = ((3*PI)/4.0);
-  towerPosition[1][2].x = 38 * -25.4; towerPosition[1][2].y = 0 * -25.4;   towerHeadings[1][2] = (PI/2.0);
-  towerPosition[2][2].x = 43 * -25.4; towerPosition[2][2].y = -42 * -25.4; towerHeadings[2][2] = (PI/4.0);
+  towerPosition[0][2].x = 26 * -25.4; towerPosition[0][2].y = 30 * -25.4;  towerHeadings[0][2] = ((3*PI)/4.0);
+  towerPosition[1][2].x = 25 * -25.4; towerPosition[1][2].y = 0 * -25.4;   towerHeadings[1][2] = (PI/2.0);
+  towerPosition[2][2].x = 37 * -25.4; towerPosition[2][2].y = -35 * -25.4; towerHeadings[2][2] = (PI/4.0);
   
 }

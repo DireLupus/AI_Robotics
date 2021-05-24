@@ -187,37 +187,37 @@ void goTo(float x, float y, MAP_RECORD& lm)
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeRightBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeRightBy( fabs((x - lm.pos.x)) * 0.1 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeBackwardBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeBackwardBy( fabs((x - lm.pos.x)) * 0.1 );
     }
     if (turnMode == 2) 
     {
-      mainDrive.strafeLeftBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeLeftBy( fabs((x - lm.pos.x)) * 0.1 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeForwardBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeForwardBy( fabs((x - lm.pos.x)) * 0.1 );
     }
   } else if (x < lm.pos.x) 
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeLeftBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeLeftBy( fabs((x - lm.pos.x)) * 0.1 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeForwardBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeForwardBy( fabs((x - lm.pos.x)) * 0.1 );
     }
     if (turnMode == 2)
     {
-      mainDrive.strafeRightBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeRightBy( fabs((x - lm.pos.x)) * 0.1 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeBackwardBy( fabs((x - lm.pos.x)) * 0.5 );
+      mainDrive.strafeBackwardBy( fabs((x - lm.pos.x)) * 0.1 );
     }
   }
 
@@ -225,37 +225,37 @@ void goTo(float x, float y, MAP_RECORD& lm)
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeForwardBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeForwardBy( fabs((y - lm.pos.y)) * 0.1 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeRightBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeRightBy( fabs((y - lm.pos.y)) * 0.1 );
     }
     if (turnMode == 2) 
     {
-      mainDrive.strafeBackwardBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeBackwardBy( fabs((y - lm.pos.y)) * 0.1 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeLeftBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeLeftBy( fabs((y - lm.pos.y)) * 0.1 );
     }
   } else if (y < lm.pos.y) 
   {
     if (turnMode == 0) 
     {
-      mainDrive.strafeBackwardBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeBackwardBy( fabs((y - lm.pos.y)) * 0.1 );
     }
     if (turnMode == 1) 
     {
-      mainDrive.strafeLeftBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeLeftBy( fabs((y - lm.pos.y)) * 0.1 );
     }
     if (turnMode == 2) 
     {
-      mainDrive.strafeForwardBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeForwardBy( fabs((y - lm.pos.y)) * 0.1 );
     }
     if (turnMode == 3) 
     {
-      mainDrive.strafeRightBy( fabs((y - lm.pos.y)) * 0.5 );
+      mainDrive.strafeRightBy( fabs((y - lm.pos.y)) * 0.1 );
     }
   }
   mainDrive.startAllMotors(true);
@@ -377,6 +377,7 @@ void patrol( MAP_RECORD lm )
 }
 
 bool foundTower = false;
+bool hasBall = true;
 int towerX = 0, towerY = 0;
 void score( MAP_RECORD& lm )
 {
@@ -402,7 +403,7 @@ void score( MAP_RECORD& lm )
     foundTower = true;
   }
   
-  if(getDistance(robotPoint, towerPosition[towerX][towerY]) > 50)
+  if(getDistance(robotPoint, towerPosition[towerX][towerY]) > 30)
   {
     goTo(towerPosition[towerX][towerY].x, towerPosition[towerX][towerY].y, lm);
   } else 
@@ -410,13 +411,14 @@ void score( MAP_RECORD& lm )
     mainDrive.stopAllMotors();
     mainDrive.turnUntil( 20.0 * ( (towerHeadings[towerX][towerY] + lm.pos.az)/fabs(towerHeadings[towerX][towerY] + lm.pos.az) ),  fabs(towerHeadings[towerX][towerY] + lm.pos.az));
     mainDrive.waitUntilComplete();
-    /*
-    mainDrive.driveUntil(20.0, 5.0);
-    */
+    mainDrive.driveUntil(20.0, 46.0);
+    mainDrive.waitUntilComplete();
+    mainDrive.getModule("Indexer")->runUntil(200.0, 3.0);
+    mainDrive.waitUntilComplete();
+    hasBall = false;
   }
 }
 
-bool hasBall = true;
 int main() {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
@@ -481,7 +483,6 @@ int main() {
           patrol(local_map);
         }
         */
-
         if(hasBall)
         {
           score(local_map);
