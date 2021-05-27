@@ -114,6 +114,8 @@ void autonomousMain(void) {
 int IntakeX = 184, IntakeY = 221;
 int32_t deadzone = 20;
 int32_t deadzoneY = 40;
+bool hasBall = true;
+bool firstRun = true;
 
 void useIntake(MAP_RECORD& lm)
 {
@@ -121,7 +123,7 @@ void useIntake(MAP_RECORD& lm)
   {
     if(lm.boxobj[i].x < IntakeX + deadzone/2.0 && lm.boxobj[i].x > IntakeX - deadzone/2.0)
     {
-      mainDrive.driveUntil(100, 20);
+      mainDrive.driveUntil(100.0, 40.0);
       if(lm.boxobj[i].y < IntakeY + deadzone/2.0 && lm.boxobj[i].y > IntakeY - deadzoneY)
       {
         if(lm.boxobj[i].classID == mainField.currentTeam)
@@ -133,13 +135,15 @@ void useIntake(MAP_RECORD& lm)
         }
       }
       mainDrive.waitUntilComplete();
+      hasBall = true;
     }
+    mainDrive.getModule("Intake")->stopAllMotors();
   }
 }
 
 void center(int x, int y)
 {
-  mainDrive.getModule("Intake")->runForwardAt(50);
+  mainDrive.getModule("Intake")->runForwardAt(100);
   mainDrive.getModule("Intake")->startAllMotors();
    if(x > IntakeX)
     {
@@ -377,7 +381,6 @@ void patrol( MAP_RECORD lm )
 }
 
 bool foundTower = false;
-bool hasBall = true;
 int towerX = 0, towerY = 0;
 void score( MAP_RECORD& lm )
 {
@@ -427,6 +430,8 @@ void score( MAP_RECORD& lm )
     hasBall = false;
     mainField.get(towerX, towerY).setTop(mainField.currentTeam);
     foundTower = false;
+    mainDrive.waitUntilComplete();
+    mainDrive.driveUntil(-50.0, 46.0);
   }
 }
 
@@ -459,7 +464,7 @@ int main() {
         // set our location to be sent to partner robot
         link.set_remote_location( local_map.pos.x, local_map.pos.y, local_map.pos.az );
 
-        //useIntake(local_map);
+        useIntake(local_map);
         // Rework this into using box objects: take object closest to the center of the camera and turn until it is in the center of the camera
         // Then move forward until it is inside the intakes
         // Then 'store' the ball
@@ -481,8 +486,10 @@ int main() {
 
       if(jetson_comms.get_packets() > 100)
       {
-        /*
-        if(found)
+        if(hasBall)
+        {
+          score(local_map);
+        } else if(found)
         {
           foundclosest = false;
           turned = false;
@@ -492,12 +499,6 @@ int main() {
         } else
         {
           patrol(local_map);
-        }
-        */
-        if(hasBall)
-        {
-          score(local_map);
-          //patrol(local_map);
         }
       }
 
