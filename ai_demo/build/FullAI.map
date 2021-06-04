@@ -4539,7 +4539,7 @@ LOAD /Applications/VEXcode Pro V5.app/Contents/Resources/sdk/vexv5/gcc/libs/libc
 LOAD /Applications/VEXcode Pro V5.app/Contents/Resources/sdk/vexv5/gcc/libs/libm.a
 LOAD /Applications/VEXcode Pro V5.app/Contents/Resources/sdk/vexv5/gcc/libs/libgcc.a
 END GROUP
-OUTPUT(build/PatrolTracking.elf elf32-littlearm)
+OUTPUT(build/FullAI.elf elf32-littlearm)
 
 .comment        0x0000000000000000       0x9d
  .comment       0x0000000000000000       0x2d build/src/DriveConfigureations.o
